@@ -1,7 +1,5 @@
 //c05c7bac
 // http://www.omdbapi.com/?apikey=[yourkey]&
-
-
 const fetchData=async(searchTerm)=>{
     const response = await axios.get('http://www.omdbapi.com/',
     {
@@ -10,19 +8,52 @@ const fetchData=async(searchTerm)=>{
             s:searchTerm
         }
     });
-    console.log(response.data)
+    return response.data.Search
 }
 
-let timeoutId;
-
-const onInputChange=(e)=>{
- if(timeoutId){clearTimeout(timeoutId)}
-    timeoutId = setTimeout(()=>fetchData(e.target.value),1000)
-}
 
 
 const input= document.querySelector('input')
+let timeoutId;
+const onInputChange = debounce(
+    async (e)=>{
+    const movies =  await fetchData(e.target.value)
+    for(let movie of movies){
+        const div = document.createElement('div')
+
+        div.innerHTML = `
+        <img src='${movie.Poster}'/>
+        <h1>${movie.Title}</h1>
+        `
+        document.querySelector('#target').appendChild(div)
+    }
+},1000) 
+
+
 input.addEventListener('input',onInputChange);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
